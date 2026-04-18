@@ -1,0 +1,12 @@
+pub const rodent_png = @embedFile("resources/rodent.png");
+pub const sinkhole_rodent_png = @embedFile("resources/sinkhole-rodent.png");
+pub const cat_png = @embedFile("resources/cat.png");
+pub const cat_rest_png = @embedFile("resources/cat-rest.png");
+pub const cheese_png = @embedFile("resources/cheese.png");
+pub const obstacle_png = @embedFile("resources/obstacle.png");
+pub const wall_png = @embedFile("resources/wall.png");
+pub const sinkhole_png = @embedFile("resources/sinkhole.png");
+pub const trap_png = @embedFile("resources/trap.png");
+pub const rodent_lives_png = @embedFile("resources/rodent-lives.png");
+pub const rodent_death_png = @embedFile("resources/rodent-death.png");
+pub const clock_png = @embedFile("resources/clock.png");

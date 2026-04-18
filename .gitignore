@@ -1,0 +1,9 @@
+.idea/
+*.iml
+
+.zig-cache/
+zig-out/
+zig-pkg/
+
+.DS_Store
+.claude/
