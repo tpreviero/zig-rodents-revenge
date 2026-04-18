@@ -15,9 +15,23 @@ I do not own the rights to the original game; this is a fan recreation for fun.
 
 ## Build and run
 
+Native desktop build:
+
 ```bash
 zig build run
 ```
+
+WebAssembly build (requires an internet connection on first run to fetch
+the Emscripten SDK):
+
+```bash
+zig build -Dtarget=wasm32-emscripten -Doptimize=ReleaseFast
+# Output lands in zig-out/web/ — serve it with any static HTTP server, e.g.:
+python3 -m http.server --directory zig-out/web 8000
+```
+
+A playable build is auto-deployed to GitHub Pages on every push to `main` —
+see [tpreviero.github.io/zig-rodents-revenge](https://tpreviero.github.io/zig-rodents-revenge/).
 
 Dependencies are fetched and built automatically on the first run.
 

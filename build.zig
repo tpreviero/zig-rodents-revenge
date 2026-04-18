@@ -1,4 +1,5 @@
 const std = @import("std");
+const rlz = @import("raylib_zig");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
@@ -9,6 +10,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     const raylib_mod = raylib_dep.module("raylib");
+    const raylib_artifact = raylib_dep.artifact("raylib");
 
     const resources_mod = b.createModule(.{
         .root_source_file = b.path("resources.zig"),
@@ -23,6 +25,42 @@ pub fn build(b: *std.Build) void {
     });
     exe_mod.addImport("raylib", raylib_mod);
     exe_mod.addImport("resources", resources_mod);
+
+    if (target.query.os_tag == .emscripten) {
+        const wasm = b.addLibrary(.{
+            .name = "index",
+            .root_module = exe_mod,
+        });
+
+        const install_dir: std.Build.InstallDir = .{ .custom = "web" };
+        const flags = rlz.emsdk.emccDefaultFlags(b.allocator, .{
+            .optimize = optimize,
+            .asyncify = true,
+        });
+        const settings = rlz.emsdk.emccDefaultSettings(b.allocator, .{
+            .optimize = optimize,
+        });
+
+        const emcc_step = rlz.emsdk.emccStep(b, raylib_artifact, wasm, .{
+            .optimize = optimize,
+            .flags = flags,
+            .settings = settings,
+            .install_dir = install_dir,
+        });
+
+        b.getInstallStep().dependOn(emcc_step);
+
+        const emrun_step = rlz.emsdk.emrunStep(
+            b,
+            b.getInstallPath(install_dir, "index.html"),
+            &.{},
+        );
+        emrun_step.dependOn(emcc_step);
+
+        const run_step = b.step("run", "Run zig-rodents-revenge in browser");
+        run_step.dependOn(emrun_step);
+        return;
+    }
 
     const exe = b.addExecutable(.{
         .name = "zig-rodents-revenge",

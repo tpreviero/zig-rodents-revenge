@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 const rl = @import("raylib");
 const game = @import("game.zig");
 const config = @import("config.zig");
@@ -6,14 +7,16 @@ const rodent = @import("rodent.zig");
 const cat = @import("cat.zig");
 const ui_mod = @import("ui.zig");
 
+pub const panic = if (builtin.os.tag == .emscripten) std.debug.no_panic else std.debug.FullPanic(std.debug.defaultPanic);
+
 const Game = game.Game;
 const UI = ui_mod.UI;
 const Position = game.Position;
 
-pub fn main() !void {
+pub fn main() void {
     const allocator = std.heap.c_allocator;
 
-    var ui = try UI.init();
+    var ui = UI.init() catch @panic("UI.init failed");
     defer UI.close();
 
     var g = Game.init(allocator, .single_player);
