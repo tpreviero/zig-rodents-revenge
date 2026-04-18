@@ -37,9 +37,12 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .asyncify = true,
         });
-        const settings = rlz.emsdk.emccDefaultSettings(b.allocator, .{
+        var settings = rlz.emsdk.emccDefaultSettings(b.allocator, .{
             .optimize = optimize,
         });
+        settings.put("STACK_SIZE", "1048576") catch @panic("OOM");
+        settings.put("INITIAL_MEMORY", "67108864") catch @panic("OOM");
+        settings.put("ALLOW_MEMORY_GROWTH", "1") catch @panic("OOM");
 
         const emcc_step = rlz.emsdk.emccStep(b, raylib_artifact, wasm, .{
             .optimize = optimize,
