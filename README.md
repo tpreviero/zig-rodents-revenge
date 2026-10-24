@@ -5,13 +5,13 @@ where you play as a mouse trying to trap cats in a maze.
 
 This is a migration of my Go implementation — [tpreviero/go-rodents-revenge](https://github.com/tpreviero/go-rodents-revenge) —
 rewritten in Zig using [raylib-zig](https://github.com/raylib-zig/raylib-zig) bindings over
-[raylib](https://github.com/raysan5/raylib) 5.6-dev.
+[raylib](https://github.com/raysan5/raylib) 6.1-dev.
 
 I do not own the rights to the original game; this is a fan recreation for fun.
 
 ## Requirements
 
-- Zig **0.16.0**
+- Zig **0.17.0**
 
 ## Build and run
 
