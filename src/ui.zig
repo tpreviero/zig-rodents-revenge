@@ -118,15 +118,15 @@ pub const UI = struct {
         var buf: [128]u8 = undefined;
         const font: i32 = @divTrunc(SQ, 2);
 
-        const level = std.fmt.bufPrintZ(&buf, "Level: {d}", .{g.current_level + 1}) catch "Level: ?";
+        const level = std.fmt.bufPrintSentinel(&buf, "Level: {d}", .{g.current_level + 1}, 0) catch "Level: ?";
         const level_w = rl.measureText(level, font);
         rl.drawText(level, SQ * (BS - 1) - level_w, @divTrunc(SQ, 2), font, .black);
 
-        const score = std.fmt.bufPrintZ(&buf, "Score: {d}", .{g.points}) catch "Score: ?";
+        const score = std.fmt.bufPrintSentinel(&buf, "Score: {d}", .{g.points}, 0) catch "Score: ?";
         const score_w = rl.measureText(score, font);
         rl.drawText(score, SQ * (BS - 1) - score_w, SQ, font, .black);
 
-        const diff = std.fmt.bufPrintZ(&buf, "Difficulty: {s}", .{g.speed.name()}) catch "Difficulty: ?";
+        const diff = std.fmt.bufPrintSentinel(&buf, "Difficulty: {s}", .{g.speed.name()}, 0) catch "Difficulty: ?";
         const diff_w = rl.measureText(diff, font);
         rl.drawText(diff, SQ * (BS - 1) - diff_w, @divTrunc(SQ * 3, 2), font, .black);
 

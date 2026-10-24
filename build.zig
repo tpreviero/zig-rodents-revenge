@@ -1,7 +1,7 @@
 const std = @import("std");
 const rlz = @import("raylib_zig");
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -44,18 +44,19 @@ pub fn build(b: *std.Build) void {
         settings.put("INITIAL_MEMORY", "67108864") catch @panic("OOM");
         settings.put("ALLOW_MEMORY_GROWTH", "1") catch @panic("OOM");
 
-        const emcc_step = rlz.emsdk.emccStep(b, raylib_artifact, wasm, .{
+        const emcc_step = try rlz.emsdk.emccStep(b, &.{}, &.{ raylib_artifact, wasm }, .{
             .optimize = optimize,
             .flags = flags,
             .settings = settings,
             .install_dir = install_dir,
+            .out_file_name = "index.html",
         });
 
         b.getInstallStep().dependOn(emcc_step);
 
-        const emrun_step = rlz.emsdk.emrunStep(
+        const emrun_step = try rlz.emsdk.emrunStep(
             b,
-            b.getInstallPath(install_dir, "index.html"),
+            b.graph.path(.install_prefix, "web/index.html"),
             &.{},
         );
         emrun_step.dependOn(emcc_step);
@@ -73,7 +74,7 @@ pub fn build(b: *std.Build) void {
 
     const run_cmd = b.addRunArtifact(exe);
     run_cmd.step.dependOn(b.getInstallStep());
-    if (b.args) |args| run_cmd.addArgs(args);
+    run_cmd.addPassthruArgs();
 
     const run_step = b.step("run", "Run zig-rodents-revenge");
     run_step.dependOn(&run_cmd.step);
